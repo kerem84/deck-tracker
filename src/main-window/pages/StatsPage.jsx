@@ -6,19 +6,25 @@ export default function StatsPage() {
 
     useEffect(() => {
         loadData();
-        if (window.electronAPI) {
-            window.electronAPI.onStatsUpdate((s) => setStats(s));
-        }
+        if (!window.electronAPI) return;
+        const cleanup = window.electronAPI.onStatsUpdate((s) => setStats(s));
+        return () => {
+            if (typeof cleanup === 'function') cleanup();
+        };
     }, []);
 
     const loadData = async () => {
         if (!window.electronAPI) return;
-        const [s, h] = await Promise.all([
-            window.electronAPI.getStats(),
-            window.electronAPI.getGameHistory(),
-        ]);
-        setStats(s);
-        setHistory(h || []);
+        try {
+            const [s, h] = await Promise.all([
+                window.electronAPI.getStats(),
+                window.electronAPI.getGameHistory(),
+            ]);
+            setStats(s);
+            setHistory(h || []);
+        } catch (err) {
+            console.error('[StatsPage] Failed to load data:', err);
+        }
     };
 
     if (!stats) {

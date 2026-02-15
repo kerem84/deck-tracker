@@ -287,8 +287,13 @@ class BgState extends EventEmitter {
     }
 
     _findPlayerByEntity(entityId) {
-        // Simple mapping — would need entity → player resolution in practice
-        return 0;
+        if (!entityId) return null;
+        for (const [playerId, player] of this.state.players) {
+            if (player.entityId === entityId) {
+                return playerId;
+            }
+        }
+        return null;
     }
 
     _isLocalPlayer(playerId) {

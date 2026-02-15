@@ -14,7 +14,9 @@ class StatsManager {
             if (fs.existsSync(this.statsFile)) {
                 return JSON.parse(fs.readFileSync(this.statsFile, 'utf8'));
             }
-        } catch { }
+        } catch (err) {
+            console.error('[StatsManager] Failed to load stats:', err.message);
+        }
         return { games: [], totalWins: 0, totalLosses: 0 };
     }
 
@@ -47,8 +49,9 @@ class StatsManager {
             this.stats.games = this.stats.games.slice(0, 500);
         }
 
-        if (result.result === 'WON') this.stats.totalWins++;
-        else if (result.result === 'LOST') this.stats.totalLosses++;
+        // Recalculate totals from actual games array to stay in sync
+        this.stats.totalWins = this.stats.games.filter(g => g.result === 'WON').length;
+        this.stats.totalLosses = this.stats.games.filter(g => g.result === 'LOST').length;
 
         this._save();
         return game;

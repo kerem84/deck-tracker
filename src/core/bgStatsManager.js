@@ -18,7 +18,9 @@ class BgStatsManager {
             if (fs.existsSync(this.statsFile)) {
                 return JSON.parse(fs.readFileSync(this.statsFile, 'utf8'));
             }
-        } catch { }
+        } catch (err) {
+            console.error('[BgStatsManager] Failed to load stats:', err.message);
+        }
         return [];
     }
 

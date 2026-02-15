@@ -38,14 +38,15 @@ class LogWatcher extends EventEmitter {
     _waitForFile() {
         const dir = path.dirname(this.logPath);
 
-        // Create directory watcher to detect when file appears
-        const checkInterval = setInterval(() => {
+        this.waitForFileTimer = setInterval(() => {
             if (!this.isWatching) {
-                clearInterval(checkInterval);
+                clearInterval(this.waitForFileTimer);
+                this.waitForFileTimer = null;
                 return;
             }
             if (fs.existsSync(this.logPath)) {
-                clearInterval(checkInterval);
+                clearInterval(this.waitForFileTimer);
+                this.waitForFileTimer = null;
                 console.log('[LogWatcher] Log file found, starting watch');
                 this._startWatching();
             }
@@ -90,10 +91,10 @@ class LogWatcher extends EventEmitter {
         const readSize = currentSize - this.lastSize;
         const buffer = Buffer.alloc(readSize);
 
+        let fd;
         try {
-            const fd = fs.openSync(this.logPath, 'r');
+            fd = fs.openSync(this.logPath, 'r');
             fs.readSync(fd, buffer, 0, readSize, this.lastSize);
-            fs.closeSync(fd);
 
             const text = buffer.toString('utf8');
             const lines = text.split('\n').filter((l) => l.trim().length > 0);
@@ -105,6 +106,12 @@ class LogWatcher extends EventEmitter {
             this.lastSize = currentSize;
         } catch (err) {
             console.error('[LogWatcher] Read error:', err.message);
+        } finally {
+            if (fd !== undefined) {
+                try {
+                    fs.closeSync(fd);
+                } catch { /* ignore */ }
+            }
         }
     }
 
@@ -113,6 +120,10 @@ class LogWatcher extends EventEmitter {
         if (this.pollTimer) {
             clearInterval(this.pollTimer);
             this.pollTimer = null;
+        }
+        if (this.waitForFileTimer) {
+            clearInterval(this.waitForFileTimer);
+            this.waitForFileTimer = null;
         }
         if (this.watcher) {
             this.watcher.close();

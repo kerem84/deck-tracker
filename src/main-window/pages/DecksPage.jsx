@@ -13,8 +13,12 @@ export default function DecksPage() {
 
     const loadDecks = async () => {
         if (!window.electronAPI) return;
-        const result = await window.electronAPI.getDecks();
-        setDecks(result || []);
+        try {
+            const result = await window.electronAPI.getDecks();
+            setDecks(result || []);
+        } catch (err) {
+            console.error('[DecksPage] Failed to load decks:', err);
+        }
     };
 
     const handleImport = async () => {
@@ -22,26 +26,39 @@ export default function DecksPage() {
         setImporting(true);
         setImportError('');
 
-        const result = await window.electronAPI.importDeckCode(importCode);
-        if (result.error) {
-            setImportError(result.error);
-        } else {
-            setImportCode('');
-            loadDecks();
+        try {
+            const result = await window.electronAPI.importDeckCode(importCode);
+            if (result.error) {
+                setImportError(result.error);
+            } else {
+                setImportCode('');
+                loadDecks();
+            }
+        } catch (err) {
+            setImportError('Failed to import deck: ' + err.message);
+        } finally {
+            setImporting(false);
         }
-        setImporting(false);
     };
 
     const handleDelete = async (deckId) => {
         if (!window.electronAPI) return;
-        await window.electronAPI.deleteDeck(deckId);
-        loadDecks();
+        try {
+            await window.electronAPI.deleteDeck(deckId);
+            loadDecks();
+        } catch (err) {
+            console.error('[DecksPage] Failed to delete deck:', err);
+        }
     };
 
     const handleActivate = async (deckId) => {
         if (!window.electronAPI) return;
-        await window.electronAPI.setActiveDeck(deckId);
-        setActiveDeckId(deckId);
+        try {
+            await window.electronAPI.setActiveDeck(deckId);
+            setActiveDeckId(deckId);
+        } catch (err) {
+            console.error('[DecksPage] Failed to activate deck:', err);
+        }
     };
 
     const classColors = {

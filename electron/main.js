@@ -147,11 +147,14 @@ async function initializeCore() {
     });
 
     // When BG detected, start forwarding events to bgState
+    let bgEventListenerAdded = false;
     bgDetector.on('bgGameDetected', () => {
-        // Forward all subsequent events to BG state
-        logParser.on('event', (event) => {
-            bgState.processEvent(event);
-        });
+        if (!bgEventListenerAdded) {
+            logParser.on('event', (event) => {
+                bgState.processEvent(event);
+            });
+            bgEventListenerAdded = true;
+        }
     });
 
     // BG state updates → overlay
@@ -292,6 +295,9 @@ app.whenReady().then(async () => {
     createOverlayWindow();
     createTray();
     await initializeCore();
+}).catch((err) => {
+    console.error('[Main] Initialization failed:', err);
+    app.quit();
 });
 
 app.on('window-all-closed', () => {

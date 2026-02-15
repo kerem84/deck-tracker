@@ -9,10 +9,15 @@ export default function BgStatsPage() {
 
     useEffect(() => {
         if (window.electronAPI?.getBgStats) {
-            window.electronAPI.getBgStats().then((data) => {
-                setStats(data);
-                setLoading(false);
-            });
+            window.electronAPI.getBgStats()
+                .then((data) => {
+                    setStats(data);
+                    setLoading(false);
+                })
+                .catch((err) => {
+                    console.error('[BgStatsPage] Failed to load stats:', err);
+                    setLoading(false);
+                });
         } else {
             setLoading(false);
         }

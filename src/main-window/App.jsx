@@ -16,9 +16,11 @@ export default function MainApp() {
     const [gameState, setGameState] = useState(null);
 
     useEffect(() => {
-        if (window.electronAPI) {
-            window.electronAPI.onGameStateUpdate((state) => setGameState(state));
-        }
+        if (!window.electronAPI) return;
+        const cleanup = window.electronAPI.onGameStateUpdate((state) => setGameState(state));
+        return () => {
+            if (typeof cleanup === 'function') cleanup();
+        };
     }, []);
 
     const isInGame = gameState && gameState.gamePhase !== 'IDLE';

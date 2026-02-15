@@ -15,7 +15,9 @@ class DeckManager {
             if (fs.existsSync(this.decksFile)) {
                 return JSON.parse(fs.readFileSync(this.decksFile, 'utf8'));
             }
-        } catch { }
+        } catch (err) {
+            console.error('[DeckManager] Failed to load decks:', err.message);
+        }
         return [];
     }
 
@@ -257,9 +259,8 @@ class DeckManager {
      */
     _lookupByDbfId(cardDatabase, dbfId) {
         if (!cardDatabase || !dbfId) return null;
-        // Try numeric dbfId first, then string
-        return cardDatabase.cardsByDbfId?.get(dbfId)
-            || cardDatabase.getCard(String(dbfId))
+        return cardDatabase?.cardsByDbfId?.get(dbfId)
+            || cardDatabase?.getCard(String(dbfId))
             || null;
     }
 }

@@ -23,7 +23,7 @@ export default function OverlayApp() {
             setBgState(state);
         });
 
-        window.electronAPI.getGameState().then(setGameState);
+        window.electronAPI.getGameState().then(setGameState).catch(() => {});
 
         return () => {
             if (typeof cleanupGame === 'function') cleanupGame();

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 /**
  * BG Board Viewer — shows last-seen opponent board snapshots.
@@ -8,10 +8,16 @@ export default function BgBoardViewer({ bgState, selectedPlayer }) {
     const players = bgState?.players || [];
     const [viewingPlayer, setViewingPlayer] = useState(selectedPlayer || null);
 
+    useEffect(() => {
+        if (selectedPlayer) {
+            setViewingPlayer(selectedPlayer);
+        }
+    }, [selectedPlayer]);
+
     // Find the board to display
     const boardKey = viewingPlayer || Object.keys(boards)[0];
     const board = boards[boardKey] || [];
-    const playerInfo = players.find((p) => p.playerId === parseInt(boardKey));
+    const playerInfo = players.find((p) => p.playerId === parseInt(boardKey || '0'));
 
     return (
         <div className="bg-board-viewer">
@@ -58,7 +64,7 @@ export default function BgBoardViewer({ bgState, selectedPlayer }) {
                             {minion.tribe && minion.tribe !== 'ALL' && minion.tribe !== 'INVALID' && (
                                 <div className="bg-minion-tribe">{minion.tribe}</div>
                             )}
-                            {minion.keywords.length > 0 && (
+                            {minion.keywords?.length > 0 && (
                                 <div className="bg-minion-keywords">
                                     {minion.keywords.map((k) => (
                                         <span key={k} className="bg-keyword-tag">

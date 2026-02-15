@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 
 export default function OpponentTracker({
     playedCards = [],
@@ -9,19 +9,21 @@ export default function OpponentTracker({
 }) {
     const [hoveredCard, setHoveredCard] = useState(null);
 
-    // Aggregate played cards
-    const aggregated = [];
-    const seen = new Map();
-    for (const card of playedCards) {
-        if (seen.has(card.cardId)) {
-            seen.get(card.cardId).count++;
-        } else {
-            const entry = { ...card, count: 1 };
-            seen.set(card.cardId, entry);
-            aggregated.push(entry);
+    const aggregated = useMemo(() => {
+        const result = [];
+        const seen = new Map();
+        for (const card of playedCards) {
+            if (seen.has(card.cardId)) {
+                seen.get(card.cardId).count++;
+            } else {
+                const entry = { ...card, count: 1 };
+                seen.set(card.cardId, entry);
+                result.push(entry);
+            }
         }
-    }
-    aggregated.sort((a, b) => a.cost - b.cost || a.name.localeCompare(b.name));
+        result.sort((a, b) => a.cost - b.cost || a.name.localeCompare(b.name));
+        return result;
+    }, [playedCards]);
 
     return (
         <div className="tracker-panel opponent-tracker">
