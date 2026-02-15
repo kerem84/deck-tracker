@@ -1,0 +1,345 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --bg-glass: rgba(10, 10, 20, 0.75);
+  --bg-glass-hover: rgba(20, 20, 40, 0.85);
+  --border-glass: rgba(255, 255, 255, 0.08);
+  --text-primary: #e8e8f0;
+  --text-secondary: rgba(255, 255, 255, 0.5);
+  --accent-blue: #3b82f6;
+  --accent-gold: #f59e0b;
+  --accent-green: #22c55e;
+  --accent-red: #ef4444;
+  --accent-purple: #a855f7;
+  --mana-blue: #2563eb;
+  --card-height: 28px;
+  --panel-radius: 12px;
+  --shadow-glow: 0 0 20px rgba(59, 130, 246, 0.15);
+}
+
+html, body, #root {
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  font-family: 'Inter', system-ui, sans-serif;
+  color: var(--text-primary);
+  overflow: hidden;
+  user-select: none;
+  -webkit-app-region: drag;
+}
+
+/* ── Overlay Root ─────────────────────────── */
+.overlay-root {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px;
+  height: 100%;
+  -webkit-app-region: drag;
+}
+
+/* ── Idle State ──────────────────────────── */
+.overlay-idle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  background: var(--bg-glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: var(--panel-radius);
+  border: 1px solid var(--border-glass);
+}
+
+.overlay-idle-icon {
+  font-size: 32px;
+  margin-bottom: 8px;
+  animation: pulse-slow 2s ease-in-out infinite;
+}
+
+.overlay-idle p {
+  font-size: 12px;
+  color: var(--text-secondary);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+@keyframes pulse-slow {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.1); }
+}
+
+/* ── Tracker Panel ───────────────────────── */
+.tracker-panel {
+  background: var(--bg-glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--panel-radius);
+  overflow: hidden;
+  flex-shrink: 0;
+  -webkit-app-region: no-drag;
+}
+
+.deck-tracker {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.opponent-tracker {
+  max-height: 45%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ── Panel Header ────────────────────────── */
+.panel-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid var(--border-glass);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.panel-icon {
+  font-size: 14px;
+}
+
+.panel-title {
+  flex: 1;
+}
+
+.panel-count {
+  background: var(--mana-blue);
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 10px;
+  min-width: 22px;
+  text-align: center;
+}
+
+/* ── Card List ───────────────────────────── */
+.card-list {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+}
+
+.card-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.card-list::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 2px;
+}
+
+/* ── Card Row ────────────────────────────── */
+.card-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: var(--card-height);
+  padding: 0 8px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: background 0.15s ease;
+}
+
+.card-row:hover {
+  background: var(--bg-glass-hover);
+}
+
+.card-row.exhausted {
+  opacity: 0.3;
+}
+
+.card-tile-bg {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 120px;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  opacity: 0.25;
+  mask-image: linear-gradient(to right, transparent, black 40%);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 40%);
+  pointer-events: none;
+}
+
+.card-cost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+  z-index: 1;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.card-name {
+  flex: 1;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 0 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  z-index: 1;
+}
+
+.card-count {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent-gold);
+  z-index: 1;
+}
+
+/* ── Card Tooltip ────────────────────────── */
+.card-tooltip {
+  position: fixed;
+  left: -280px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1000;
+  pointer-events: none;
+  animation: tooltip-in 0.15s ease;
+}
+
+.card-tooltip img {
+  width: 256px;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+}
+
+@keyframes tooltip-in {
+  from { opacity: 0; transform: translateY(-50%) translateX(10px); }
+  to { opacity: 1; transform: translateY(-50%) translateX(0); }
+}
+
+/* ── Opponent Info Bar ───────────────────── */
+.opponent-info-bar {
+  display: flex;
+  gap: 4px;
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--border-glass);
+}
+
+.info-chip {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 8px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 6px;
+  font-size: 11px;
+}
+
+.chip-label {
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.chip-value {
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* ── Sections ────────────────────────────── */
+.section-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-secondary);
+  padding: 6px 10px 2px;
+}
+
+.secrets-section {
+  border-bottom: 1px solid var(--border-glass);
+  padding-bottom: 4px;
+}
+
+.secret-row .card-cost {
+  background: linear-gradient(135deg, #7c3aed, #a855f7);
+}
+
+/* ── Divider ─────────────────────────────── */
+.overlay-divider {
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--border-glass), transparent);
+}
+
+/* ── Turn Counter ────────────────────────── */
+.turn-counter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: var(--bg-glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--panel-radius);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.turn-phase {
+  color: var(--accent-gold);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 11px;
+}
+
+.turn-timer {
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.turn-timer.urgent {
+  color: var(--accent-red);
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0.5; }
+}
+
+/* ── Empty State ─────────────────────────── */
+.empty-state {
+  padding: 16px;
+  text-align: center;
+  font-size: 11px;
+  color: var(--text-secondary);
+  font-style: italic;
+}
