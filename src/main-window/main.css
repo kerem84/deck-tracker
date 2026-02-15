@@ -827,3 +827,129 @@ body,
     display: block;
     margin-top: 12px;
 }
+
+/* ═══════════════════════════════════════════
+   BATTLEGROUNDS STATS PAGE
+   ═══════════════════════════════════════════ */
+.page-title {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    margin-bottom: 20px;
+}
+
+.page-loading {
+    text-align: center;
+    padding: 48px 0;
+    color: var(--text-muted);
+    font-size: 14px;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 48px 0;
+    color: var(--text-muted);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.bg-hero-table {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+.bg-hero-header {
+    display: grid;
+    grid-template-columns: 1fr 60px 60px 60px;
+    gap: 8px;
+    padding: 10px 14px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.bg-hero-row {
+    display: grid;
+    grid-template-columns: 1fr 60px 60px 60px;
+    gap: 8px;
+    padding: 10px 14px;
+    font-size: 13px;
+    border-bottom: 1px solid var(--border-subtle);
+    transition: background 0.1s;
+}
+
+.bg-hero-row:last-child {
+    border-bottom: none;
+}
+
+.bg-hero-row:hover {
+    background: var(--bg-card-hover);
+}
+
+.bg-hero-name {
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.bg-hero-games,
+.bg-hero-avg,
+.bg-hero-top4 {
+    text-align: center;
+    color: var(--text-secondary);
+    font-variant-numeric: tabular-nums;
+}
+
+.bg-recent-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.bg-recent-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 14px;
+    background: var(--bg-card);
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    transition: background 0.1s;
+}
+
+.bg-recent-row:hover {
+    background: var(--bg-card-hover);
+}
+
+.bg-placement {
+    font-size: 16px;
+    font-weight: 800;
+    min-width: 28px;
+    font-variant-numeric: tabular-nums;
+}
+
+.bg-recent-hero {
+    flex: 1;
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.bg-recent-tier,
+.bg-recent-turns,
+.bg-recent-time {
+    font-size: 12px;
+    color: var(--text-muted);
+}

@@ -2,24 +2,40 @@ import React, { useState, useEffect } from 'react';
 import DeckTracker from './components/DeckTracker';
 import OpponentTracker from './components/OpponentTracker';
 import TurnCounter from './components/TurnCounter';
+import BgLeaderboard from './components/BgLeaderboard';
+import BgBoardViewer from './components/BgBoardViewer';
+import BgTurnInfo from './components/BgTurnInfo';
+import './bg-overlay.css';
 
 export default function OverlayApp() {
     const [gameState, setGameState] = useState(null);
+    const [bgState, setBgState] = useState(null);
 
     useEffect(() => {
-        // Listen for game state updates from Electron main process
-        if (window.electronAPI) {
-            window.electronAPI.onGameStateUpdate((state) => {
-                setGameState(state);
-            });
-            // Get initial state
-            window.electronAPI.getGameState().then(setGameState);
-        }
+        if (!window.electronAPI) return;
+
+        // Standard game state
+        const cleanupGame = window.electronAPI.onGameStateUpdate((state) => {
+            setGameState(state);
+        });
+        // BG state
+        const cleanupBg = window.electronAPI.onBgStateUpdate?.((state) => {
+            setBgState(state);
+        });
+
+        window.electronAPI.getGameState().then(setGameState);
+
+        return () => {
+            if (typeof cleanupGame === 'function') cleanupGame();
+            if (typeof cleanupBg === 'function') cleanupBg();
+        };
     }, []);
 
+    const isBg = bgState && bgState.phase && bgState.phase !== 'GAME_OVER';
     const isInGame = gameState && gameState.gamePhase !== 'IDLE';
 
-    if (!isInGame) {
+    // Idle state
+    if (!isInGame && !isBg) {
         return (
             <div className="overlay-idle">
                 <div className="overlay-idle-icon">⚔️</div>
@@ -28,6 +44,19 @@ export default function OverlayApp() {
         );
     }
 
+    // Battlegrounds mode
+    if (isBg) {
+        return (
+            <div className="overlay-root">
+                <BgTurnInfo bgState={bgState} />
+                <BgLeaderboard bgState={bgState} />
+                <div className="overlay-divider" />
+                <BgBoardViewer bgState={bgState} />
+            </div>
+        );
+    }
+
+    // Standard constructed mode
     return (
         <div className="overlay-root">
             <TurnCounter

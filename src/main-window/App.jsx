@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import DecksPage from './pages/DecksPage';
 import StatsPage from './pages/StatsPage';
+import BgStatsPage from './pages/BgStatsPage';
 import SettingsPage from './pages/SettingsPage';
 
 const TABS = [
     { id: 'decks', label: 'Decks', icon: '🃏' },
     { id: 'stats', label: 'Stats', icon: '📊' },
+    { id: 'battlegrounds', label: 'BG', icon: '⚔️' },
     { id: 'settings', label: 'Settings', icon: '⚙️' },
 ];
 
@@ -76,6 +78,7 @@ export default function MainApp() {
                 <main className="content">
                     {activeTab === 'decks' && <DecksPage />}
                     {activeTab === 'stats' && <StatsPage />}
+                    {activeTab === 'battlegrounds' && <BgStatsPage />}
                     {activeTab === 'settings' && <SettingsPage />}
                 </main>
             </div>

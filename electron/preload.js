@@ -21,7 +21,14 @@ contextBridge.exposeInMainWorld('electronAPI', {
         ipcRenderer.on('stats-update', handler);
         return () => ipcRenderer.removeListener('stats-update', handler);
     },
+    onBgStateUpdate: (callback) => {
+        const handler = (_, state) => callback(state);
+        ipcRenderer.on('bg-state-update', handler);
+        return () => ipcRenderer.removeListener('bg-state-update', handler);
+    },
     getGameState: () => ipcRenderer.invoke('get-game-state'),
+    getBgStats: () => ipcRenderer.invoke('get-bg-stats'),
+    getBgGameHistory: () => ipcRenderer.invoke('get-bg-game-history'),
 
     // Card database
     getCard: (cardId) => ipcRenderer.invoke('get-card', cardId),

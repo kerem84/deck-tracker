@@ -1,0 +1,315 @@
+/* ── Battlegrounds Overlay ───────────────────────── */
+
+.bg-section-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(255, 255, 255, 0.5);
+    padding: 6px 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.bg-empty {
+    text-align: center;
+    padding: 16px 10px;
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 12px;
+    font-style: italic;
+}
+
+/* ── Leaderboard ────────────────────────────────── */
+
+.bg-leaderboard {
+    margin-bottom: 6px;
+}
+
+.bg-player-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 8px;
+    cursor: pointer;
+    transition: background 0.15s;
+    border-left: 2px solid transparent;
+}
+
+.bg-player-row:hover {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.bg-player-local {
+    border-left-color: #a78bfa;
+    background: rgba(167, 139, 250, 0.06);
+}
+
+.bg-player-next {
+    border-left-color: #f87171;
+    background: rgba(248, 113, 113, 0.06);
+}
+
+.bg-player-dead {
+    opacity: 0.35;
+    text-decoration: line-through;
+}
+
+.bg-player-rank {
+    width: 16px;
+    font-size: 11px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.4);
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.bg-player-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.bg-player-name {
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.85);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.bg-you-badge {
+    font-size: 8px;
+    font-weight: 800;
+    color: #a78bfa;
+    background: rgba(167, 139, 250, 0.15);
+    padding: 0 3px;
+    border-radius: 3px;
+    letter-spacing: 0.05em;
+}
+
+.bg-next-badge {
+    font-size: 8px;
+    font-weight: 800;
+    color: #f87171;
+    background: rgba(248, 113, 113, 0.15);
+    padding: 0 3px;
+    border-radius: 3px;
+    letter-spacing: 0.05em;
+}
+
+.bg-player-hp-bar {
+    position: relative;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 3px;
+    margin-top: 2px;
+    overflow: hidden;
+}
+
+.bg-player-hp-fill {
+    height: 100%;
+    border-radius: 3px;
+    background: linear-gradient(90deg, #f87171, #34d399);
+    transition: width 0.4s ease;
+}
+
+.bg-player-hp-text {
+    position: absolute;
+    right: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 8px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.bg-player-tier {
+    flex-shrink: 0;
+}
+
+.bg-tier-badge {
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.bg-skull {
+    font-size: 12px;
+    flex-shrink: 0;
+}
+
+/* ── Board Viewer ───────────────────────────────── */
+
+.bg-board-viewer {
+    margin-bottom: 6px;
+}
+
+.bg-board-player-name {
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 10px;
+    margin-left: 4px;
+}
+
+.bg-board-tabs {
+    display: flex;
+    gap: 2px;
+    padding: 4px 8px;
+    flex-wrap: wrap;
+}
+
+.bg-board-tab {
+    font-size: 9px;
+    padding: 2px 5px;
+    border-radius: 3px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.03);
+    color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.bg-board-tab:hover {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.bg-board-tab.active {
+    background: rgba(167, 139, 250, 0.15);
+    border-color: rgba(167, 139, 250, 0.3);
+    color: #c4b5fd;
+}
+
+.bg-board-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 4px;
+    padding: 6px 8px;
+}
+
+.bg-minion-tile {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 6px;
+    padding: 5px 6px;
+    transition: background 0.15s;
+}
+
+.bg-minion-tile:hover {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.bg-minion-name {
+    font-size: 10px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.85);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 3px;
+}
+
+.bg-minion-stats {
+    display: flex;
+    gap: 6px;
+    font-size: 10px;
+}
+
+.bg-minion-attack {
+    color: #fbbf24;
+}
+
+.bg-minion-health {
+    color: #f87171;
+}
+
+.bg-minion-tier {
+    font-size: 8px;
+    color: rgba(255, 255, 255, 0.35);
+    margin-top: 2px;
+}
+
+.bg-minion-tribe {
+    font-size: 8px;
+    color: #a78bfa;
+    margin-top: 1px;
+}
+
+.bg-minion-keywords {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px;
+    margin-top: 2px;
+}
+
+.bg-keyword-tag {
+    font-size: 7px;
+    padding: 1px 3px;
+    border-radius: 2px;
+    background: rgba(167, 139, 250, 0.12);
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: capitalize;
+}
+
+/* ── Turn Info ──────────────────────────────────── */
+
+.bg-turn-info {
+    padding: 6px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.bg-info-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.bg-phase-badge {
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: #000;
+    letter-spacing: 0.04em;
+}
+
+.bg-turn-number {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.5);
+    font-weight: 600;
+}
+
+.bg-tier-display {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.bg-tier-stars {
+    font-size: 10px;
+}
+
+.bg-tier-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.bg-tier-upgrade {
+    font-size: 9px;
+    color: rgba(255, 255, 255, 0.35);
+}
+
+.bg-gold-display {
+    font-size: 12px;
+    font-weight: 700;
+    color: #fbbf24;
+}
+
+.bg-frozen-badge {
+    font-size: 10px;
+    color: #93c5fd;
+}

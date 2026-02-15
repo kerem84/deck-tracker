@@ -7,6 +7,10 @@ const { CardDatabase } = require('../src/core/cardDatabase');
 const { LogConfigManager } = require('../src/core/logConfig');
 const { StatsManager } = require('../src/core/statsManager');
 const { DeckManager } = require('../src/core/deckManager');
+const { BgDetector } = require('../src/core/bgDetector');
+const { BgState } = require('../src/core/bgState');
+const { BgMinionDB } = require('../src/core/bgMinionDB');
+const { BgStatsManager } = require('../src/core/bgStatsManager');
 
 let mainWindow = null;
 let overlayWindow = null;
@@ -17,6 +21,10 @@ let gameState = null;
 let cardDatabase = null;
 let statsManager = null;
 let deckManager = null;
+let bgDetector = null;
+let bgState = null;
+let bgMinionDB = null;
+let bgStatsManager = null;
 
 const isDev = !app.isPackaged;
 
@@ -125,6 +133,52 @@ async function initializeCore() {
         logParser.parseLines(lines);
     });
     logWatcher.start();
+
+    // Initialize BG modules
+    bgDetector = new BgDetector();
+    bgStatsManager = new BgStatsManager();
+    bgMinionDB = new BgMinionDB(cardDatabase);
+    bgMinionDB.initialize();
+    bgState = new BgState(cardDatabase);
+
+    // Wire log parser events → BG detector
+    logParser.on('event', (event) => {
+        bgDetector.processEvent(event);
+    });
+
+    // When BG detected, start forwarding events to bgState
+    bgDetector.on('bgGameDetected', () => {
+        // Forward all subsequent events to BG state
+        logParser.on('event', (event) => {
+            bgState.processEvent(event);
+        });
+    });
+
+    // BG state updates → overlay
+    bgState.on('stateChanged', (state) => {
+        if (overlayWindow && !overlayWindow.isDestroyed()) {
+            overlayWindow.webContents.send('bg-state-update', state);
+        }
+        if (mainWindow && !mainWindow.isDestroyed()) {
+            mainWindow.webContents.send('bg-state-update', state);
+        }
+    });
+
+    bgState.on('bgGameEnd', (result) => {
+        bgStatsManager.recordGame(result);
+        bgDetector.reset();
+        if (mainWindow && !mainWindow.isDestroyed()) {
+            mainWindow.webContents.send('bg-stats-update', bgStatsManager.getStats());
+        }
+    });
+
+    // Reset BG state on new game
+    gameState.on('stateChanged', (state) => {
+        if (state.gamePhase === 'IDLE') {
+            bgDetector.reset();
+            bgState.reset();
+        }
+    });
 }
 
 function setupIPC() {
@@ -180,6 +234,9 @@ function setupIPC() {
 
     // Game state
     ipcMain.handle('get-game-state', () => gameState?.getState() || null);
+    ipcMain.handle('get-bg-state', () => bgState?.getState() || null);
+    ipcMain.handle('get-bg-stats', () => bgStatsManager?.getStats() || null);
+    ipcMain.handle('get-bg-game-history', () => bgStatsManager?.getGameHistory() || []);
 
     // Reset
     ipcMain.on('reset-game', () => gameState?.reset());
